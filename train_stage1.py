@@ -45,9 +45,10 @@ def main(args):
         seed_torch(args.seed+i)
         # pdb.set_trace()
         train_dataset, val_dataset, test_dataset = dataset.return_splits(from_id=False,
-                csv_path='{}/splits_{}.csv'.format(args.split_dir, i))
+                csv_path='/content/WSI-finetuning/splits/task_camelyon16/splits_0.csv')
         # train_loader = get_split_loader(train_dataset)
         datasets = (train_dataset, val_dataset, test_dataset)
+        print("Len of train dataset -->", len(train_dataset))
         results, test_auc, val_auc, test_acc, val_acc  = train(datasets, i, args)
         all_test_auc.append(test_auc)
         all_val_auc.append(val_auc)
@@ -120,17 +121,17 @@ args.lr = 1e-4
 args.weighted_sample =True
 args.inst_loss ="svm"
 args.task = "task_1_tumor_vs_normal"
-args.split_dir = "task_camelyon16/"
-args.csv_path = './dataset_csv/camelyon16.csv'
-args.data_root_dir = "./data_feat"
-sub_feat_dir = 'Camelyon16_patch256_res50'
+args.split_dir = "/kaggle/working/WSI-finetuning/splits/task_camelyon16"
+args.csv_path = '/kaggle/working/WSI-finetuning/dataset_csv/camelyon16.csv'
+args.data_root_dir = "/content/drive/MyDrive/data-wsi/data_feat"
+sub_feat_dir = 'Camelyon16_patch256_ostu_res50'
 args.max_epochs = 50
 args.reg = 1e-04
 args.use_drop_out = True
 args.bag_weight = 0.7
 args.seed = 2021
-args.k = 5
-args.k_end = 5
+args.k = 1
+args.k_end = 1
 
 def seed_torch(seed=7):
     import random

@@ -206,6 +206,8 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 
 		if save_mask:
 			mask = WSI_object.visWSI(**current_vis_params)
+			print("Mask save -->", mask_save_dir)
+			print("Slide id -->", slide_id)
 			mask_path = os.path.join(mask_save_dir, slide_id+'.jpg')
 			mask.save(mask_path)
 

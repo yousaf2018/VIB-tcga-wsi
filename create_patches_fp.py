@@ -54,9 +54,12 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 				  patch = False, auto_skip=True, process_list = None):
 	
 
+	# Get a list of all files (including directories) within the source directory
+	all_files = sorted(os.listdir(source), reverse=True)
 
-	slides = sorted(os.listdir(source),reverse=True)
-	slides = [slide for slide in slides if os.path.isfile(os.path.join(source, slide))]
+	# Filter out only SVS files from all_files list
+	slides = [os.path.join(source, file) for file in all_files if file.endswith(".svs")]
+
 	if process_list is None:
 		df = initialize_df(slides, seg_params, filter_params, vis_params, patch_params)
 	

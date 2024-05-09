@@ -56,7 +56,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 
 	# Get a list of all files (including directories) within the source directory
 	all_files = sorted(os.listdir(source), reverse=True)
-
+	print(all_files)
 	# Filter out only SVS files from all_files list
 	slides = [file for file in all_files if file.endswith(".svs")]
 	print(slides)

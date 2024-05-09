@@ -54,11 +54,16 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 				  patch = False, auto_skip=True, process_list = None):
 	
 
-	# Get a list of all files (including directories) within the source directory
-	all_files = sorted(os.listdir(source), reverse=True)
-	print(all_files)
-	# Filter out only SVS files from all_files list
-	slides = [file for file in all_files if file.endswith(".svs")]
+	# Initialize an empty list to store SVS file paths
+	slides = []
+
+	# Recursively traverse through all directories and subdirectories
+	for root, dirs, files in os.walk(source):
+		for file in files:
+			if file.endswith(".svs"):
+				slides.append(os.path.join(root, file))
+
+	# Now slides list contains the complete paths to all SVS files within the source directory and its subdirectories
 	print(slides)
 	if process_list is None:
 		df = initialize_df(slides, seg_params, filter_params, vis_params, patch_params)

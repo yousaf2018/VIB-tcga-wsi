@@ -258,6 +258,10 @@ class Whole_Slide_Bag_FP(Dataset):
 
 		self.file_path = file_path
 		# pdb.set_trace()
+		try:
+			pass
+		except Exception as a:
+			pass
 		with h5py.File(self.file_path, "r") as f:
 			dset = f['coords']
 			self.patch_level = f['coords'].attrs['patch_level']

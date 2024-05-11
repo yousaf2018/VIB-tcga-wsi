@@ -103,7 +103,7 @@ if __name__ == '__main__':
 		print("Slide id -->", slide_id)
 		bag_name = slide_id.split("/")[5]+'.h5'
 		h5_file_path = os.path.join(args.data_h5_dir, 'patches', bag_name)
-		slide_file_path = os.path.join(args.data_slide_dir, slide_id.split("/")[5]+args.slide_ext)
+		slide_file_path = os.path.join(slide_id+args.slide_ext)
 		print('\nprogress: {}/{}'.format(bag_candidate_idx, total))
 		# print(slide_id)
 

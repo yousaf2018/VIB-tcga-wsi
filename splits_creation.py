@@ -1,36 +1,25 @@
 import pandas as pd
-import numpy as np
+from sklearn.model_selection import train_test_split
 
-# Read the CSV file containing slide IDs
-data = pd.read_csv('camelyon16.csv')
+# Read the CSV file containing the case IDs and labels
+df = pd.read_csv("camelyon16.csv")
 
-# Shuffle the rows randomly
-data = data.sample(frac=1).reset_index(drop=True)
+# Separate the case IDs and labels
+case_ids = df['case_id']
+labels = df['label']
+case_id_list = case_ids.values
+train_list = case_id_list[:48]
+val_list = case_id_list[48:59]
+test_list= case_id_list[59:69]
+# Create DataFrames for train, val, and test sets
+train_df = pd.DataFrame({'train': train_list})
+val_df = pd.DataFrame({'val': val_list})
+test_df = pd.DataFrame({'test': test_list})
 
-# Determine the number of rows in the dataset
-num_rows = len(data)
+# Concatenate the DataFrames
+split_df = pd.concat([train_df, val_df, test_df], axis=1)
 
-# Determine the number of rows for train, val, and test
-num_train = int(0.6 * num_rows)
-num_val = int(0.2 * num_rows)
-num_test = num_rows - num_train - num_val
+# Save the DataFrame to a CSV file
+split_df.to_csv("split_0.csv", index=False)
 
-# Create a new DataFrame for the dataset
-dataset = pd.DataFrame(columns=['train', 'val', 'test'])
-
-# Fill the train column with slide IDs
-dataset['train'] = data['slide_id'].iloc[:num_train]
-
-# Fill the val column with slide IDs
-dataset['val'] = data['slide_id'].iloc[num_train:num_train+num_val]
-
-# Fill the test column with slide IDs
-dataset['test'] = data['slide_id'].iloc[num_train+num_val:]
-
-# Fill any missing entries with NaN
-dataset = dataset.fillna("")
-
-# Save the dataset to a new CSV file named "split_dataset.csv"
-dataset.to_csv('split_dataset.csv', index=False)
-
-print("Dataset created and saved as split_dataset.csv.")
+print("CSV file saved successfully.")

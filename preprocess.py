@@ -1,10 +1,10 @@
 import pandas as pd
 
 # Read the first CSV file containing patches names
-patches_df = pd.read_csv('C:\\Users\\neurog\\Pictures\\vib\\WSI-finetuning\\zenodo_patches_names.csv')
+patches_df = pd.read_csv('C:\\Users\\Mahmood Yousaf\\Downloads\\WSI-finetuning\\zenodo_patches_names.csv')
 
 # Read the second CSV file containing selected data
-selected_df = pd.read_csv('C:\\Users\\neurog\\Pictures\\vib\\WSI-finetuning\\selected_data.csv')
+selected_df = pd.read_csv('C:\\Users\\Mahmood Yousaf\\Downloads\\WSI-finetuning\\selected_data.csv')
 
 # Extract the 'case_id' column from patches_df based on the pattern
 patches_df['case_id'] = patches_df['PATIENT'].str.split('-').str[2]
@@ -31,6 +31,6 @@ patches_df.drop(columns=['PATIENT'], inplace=True)
 
 
 # Save the modified DataFrame patches_df to a new CSV file
-patches_df.to_csv('C:\\Users\\neurog\\Pictures\\vib\\WSI-finetuning\\camelyon16.csv', index=False)
+patches_df.to_csv('C:\\Users\\Mahmood Yousaf\\Downloads\\WSI-finetuning\\camelyon16.csv', index=False)
 
 print("New CSV file created with label column.")

@@ -100,14 +100,15 @@ if __name__ == '__main__':
 
 	for bag_candidate_idx in range(total):
 		slide_id = bags_dataset[bag_candidate_idx].split(args.slide_ext)[0]
-		bag_name = slide_id+'.h5'
+		print("Slide id -->", slide_id)
+		bag_name = slide_id.split("/")[5]+'.h5'
 		h5_file_path = os.path.join(args.data_h5_dir, 'patches', bag_name)
-		slide_file_path = os.path.join(args.data_slide_dir, slide_id+args.slide_ext)
+		slide_file_path = os.path.join(args.data_slide_dir, slide_id.split("/")[5]+args.slide_ext)
 		print('\nprogress: {}/{}'.format(bag_candidate_idx, total))
-		print(slide_id)
+		# print(slide_id)
 
-		if not args.no_auto_skip and slide_id+'.pt' in dest_files:
-			print('skipped {}'.format(slide_id))
+		if not args.no_auto_skip and slide_id.split("/")[5]+'.pt' in dest_files:
+			print('skipped {}'.format(slide_id.split("/")[5]))
 			continue 
 
 		output_path = os.path.join(args.feat_dir, 'h5_files', bag_name)

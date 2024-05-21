@@ -569,7 +569,12 @@ def validate_clam(cur, epoch, model, loader, n_classes, early_stopping = None, w
     val_loss /= len(loader)
 
     if n_classes == 2:
-        auc = roc_auc_score(labels, prob[:, 1])
+        try:
+            print("Labels -->", labels, prob[:, 1])
+            auc = roc_auc_score(labels, prob[:, 1])
+        except Exception as ec:
+            pass
+
     else:
         aucs = []
         binary_labels = label_binarize(labels, classes=[i for i in range(n_classes)])

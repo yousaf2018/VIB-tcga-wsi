@@ -536,31 +536,34 @@ def validate_clam(cur, epoch, model, loader, n_classes, early_stopping = None, w
     labels = np.zeros(len(loader))
     sample_size = model.k_sample
     with torch.no_grad():
-        print("Here is loader --->", loader)
-        for batch_idx, (data, label) in enumerate(loader):
-            data, label = data.to(device), label.to(device)      
-            logits, Y_prob, Y_hat, _, instance_dict = model(data, label=label, instance_eval=True,testing=True)
-            acc_logger.log(Y_hat, label)
-            
-            loss = loss_fn(logits, label)
+        try:
+            print("Here is loader --->", loader)
+            for batch_idx, (data, label) in enumerate(loader):
+                data, label = data.to(device), label.to(device)      
+                logits, Y_prob, Y_hat, _, instance_dict = model(data, label=label, instance_eval=True,testing=True)
+                acc_logger.log(Y_hat, label)
+                
+                loss = loss_fn(logits, label)
 
-            val_loss += loss.item()
-            # pdb.set_trace()
-            instance_loss = instance_dict['instance_loss']
-            
-            inst_count+=1
-            instance_loss_value = instance_loss.item()
-            val_inst_loss += instance_loss_value
+                val_loss += loss.item()
+                # pdb.set_trace()
+                instance_loss = instance_dict['instance_loss']
+                
+                inst_count+=1
+                instance_loss_value = instance_loss.item()
+                val_inst_loss += instance_loss_value
 
-            inst_preds = instance_dict['inst_preds']
-            inst_labels = instance_dict['inst_labels']
-            inst_logger.log_batch(inst_preds, inst_labels)
+                inst_preds = instance_dict['inst_preds']
+                inst_labels = instance_dict['inst_labels']
+                inst_logger.log_batch(inst_preds, inst_labels)
 
-            prob[batch_idx] = Y_prob.cpu().numpy()
-            labels[batch_idx] = label.item()
-            
-            error = calculate_error(Y_hat, label)
-            val_error += error
+                prob[batch_idx] = Y_prob.cpu().numpy()
+                labels[batch_idx] = label.item()
+                
+                error = calculate_error(Y_hat, label)
+                val_error += error
+        except Exception as ec :
+            pass
 
     val_error /= len(loader)
     val_loss /= len(loader)

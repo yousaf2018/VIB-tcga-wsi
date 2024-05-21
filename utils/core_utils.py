@@ -539,6 +539,7 @@ def validate_clam(cur, epoch, model, loader, n_classes, early_stopping = None, w
         for batch_idx, (data, label) in enumerate(loader):
             data, label = data.to(device), label.to(device)      
             logits, Y_prob, Y_hat, _, instance_dict = model(data, label=label, instance_eval=True,testing=True)
+            print("Debug -->",logits, Y_prob, Y_hat)
             acc_logger.log(Y_hat, label)
             
             loss = loss_fn(logits, label)

@@ -536,6 +536,7 @@ def validate_clam(cur, epoch, model, loader, n_classes, early_stopping = None, w
     labels = np.zeros(len(loader))
     sample_size = model.k_sample
     with torch.no_grad():
+        print("Here is loader --->", loader)
         for batch_idx, (data, label) in enumerate(loader):
             data, label = data.to(device), label.to(device)      
             logits, Y_prob, Y_hat, _, instance_dict = model(data, label=label, instance_eval=True,testing=True)

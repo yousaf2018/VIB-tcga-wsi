@@ -31,6 +31,6 @@ patches_df.drop(columns=['PATIENT'], inplace=True)
 
 
 # Save the modified DataFrame patches_df to a new CSV file
-patches_df.to_csv('C:\\Users\\Mahmood Yousaf\\Downloads\\WSI-finetuning\\camelyon16.csv', index=False)
+patches_df.to_csv('C:\\Users\\Mahmood Yousaf\\Downloads\\WSI-finetuning\\camelyon16.csv', index=True)
 
 print("New CSV file created with label column.")

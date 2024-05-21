@@ -20,6 +20,6 @@ test_df = pd.DataFrame({'test': test_list})
 split_df = pd.concat([train_df, val_df, test_df], axis=1)
 
 # Save the DataFrame to a CSV file
-split_df.to_csv("split_0.csv", index=False)
+split_df.to_csv("split_0.csv", index=True)
 
 print("CSV file saved successfully.")

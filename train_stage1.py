@@ -49,6 +49,7 @@ def main(args):
         # train_loader = get_split_loader(train_dataset)
         datasets = (train_dataset, val_dataset, test_dataset)
         print("Len of train dataset -->", len(train_dataset))
+        print("Dataset ", datasets)
         results, test_auc, val_auc, test_acc, val_acc  = train(datasets, i, args)
         all_test_auc.append(test_auc)
         all_val_auc.append(val_auc)

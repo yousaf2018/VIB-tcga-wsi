@@ -573,7 +573,7 @@ def validate_clam(cur, epoch, model, loader, n_classes, early_stopping = None, w
             print("Labels -->", labels, prob[:, 1])
             auc = roc_auc_score(labels, prob[:, 1])
         except Exception as ec:
-            pass
+            auc = 0
 
     else:
         aucs = []

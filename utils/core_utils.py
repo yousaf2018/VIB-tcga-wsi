@@ -393,7 +393,7 @@ def train_loop_clam(epoch, model, loader, optimizer, n_classes, bag_weight, writ
         print('\n')
         for i in range(2):
             acc, correct, count = inst_logger.get_summary(i)
-            # print('class {} clustering acc {}: correct {}/{}'.format(i, acc, correct, count))
+            print('class {} clustering acc {}: correct {}/{}'.format(i, acc, correct, count))
 
     print('Epoch: {}, train_loss: {:.4f}, train_clustering_loss:  {:.4f}, train_error: {:.4f}'.format(epoch, train_loss, train_inst_loss,  train_error))
     for i in range(n_classes):
@@ -536,45 +536,36 @@ def validate_clam(cur, epoch, model, loader, n_classes, early_stopping = None, w
     labels = np.zeros(len(loader))
     sample_size = model.k_sample
     with torch.no_grad():
-        try:
-            # print("Here is loader --->", loader)
-            for batch_idx, (data, label) in enumerate(loader):
-                data, label = data.to(device), label.to(device)      
-                logits, Y_prob, Y_hat, _, instance_dict = model(data, label=label, instance_eval=True,testing=True)
-                acc_logger.log(Y_hat, label)
-                
-                loss = loss_fn(logits, label)
+        for batch_idx, (data, label) in enumerate(loader):
+            data, label = data.to(device), label.to(device)      
+            logits, Y_prob, Y_hat, _, instance_dict = model(data, label=label, instance_eval=True,testing=True)
+            acc_logger.log(Y_hat, label)
+            
+            loss = loss_fn(logits, label)
 
-                val_loss += loss.item()
-                # pdb.set_trace()
-                instance_loss = instance_dict['instance_loss']
-                
-                inst_count+=1
-                instance_loss_value = instance_loss.item()
-                val_inst_loss += instance_loss_value
+            val_loss += loss.item()
+            # pdb.set_trace()
+            instance_loss = instance_dict['instance_loss']
+            
+            inst_count+=1
+            instance_loss_value = instance_loss.item()
+            val_inst_loss += instance_loss_value
 
-                inst_preds = instance_dict['inst_preds']
-                inst_labels = instance_dict['inst_labels']
-                inst_logger.log_batch(inst_preds, inst_labels)
+            inst_preds = instance_dict['inst_preds']
+            inst_labels = instance_dict['inst_labels']
+            inst_logger.log_batch(inst_preds, inst_labels)
 
-                prob[batch_idx] = Y_prob.cpu().numpy()
-                labels[batch_idx] = label.item()
-                
-                error = calculate_error(Y_hat, label)
-                val_error += error
-        except Exception as ec :
-            pass
+            prob[batch_idx] = Y_prob.cpu().numpy()
+            labels[batch_idx] = label.item()
+            
+            error = calculate_error(Y_hat, label)
+            val_error += error
 
     val_error /= len(loader)
     val_loss /= len(loader)
 
     if n_classes == 2:
-        try:
-            print("Labels -->", labels, prob[:, 1])
-            auc = roc_auc_score(labels, prob[:, 1])
-        except Exception as ec:
-            auc = 0
-
+        auc = roc_auc_score(labels, prob[:, 1])
     else:
         aucs = []
         binary_labels = label_binarize(labels, classes=[i for i in range(n_classes)])
@@ -592,7 +583,7 @@ def validate_clam(cur, epoch, model, loader, n_classes, early_stopping = None, w
         val_inst_loss /= inst_count
         for i in range(2):
             acc, correct, count = inst_logger.get_summary(i)
-            # print('class {} clustering acc {}: correct {}/{}'.format(i, acc, correct, count))
+            print('class {} clustering acc {}: correct {}/{}'.format(i, acc, correct, count))
     
     if writer:
         writer.add_scalar('val/loss', val_loss, epoch)

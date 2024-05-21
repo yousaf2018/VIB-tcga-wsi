@@ -8,13 +8,9 @@ df = pd.read_csv("camelyon16.csv")
 case_ids = df['case_id']
 labels = df['label']
 case_id_list = case_ids.values
-train_len = int(60/100 * len(case_id_list))
-test_len = int(20/100 * len(case_id_list))
-val_len = int(20/100 * len(case_id_list))
-print(train_len, val_len, test_len)
-train_list = case_id_list[:train_len]
-val_list = case_id_list[train_len:train_len+val_len]
-test_list= case_id_list[train_len+val_len:]
+train_list = case_id_list[:77]
+val_list = case_id_list[77:93]
+test_list= case_id_list[93:]
 # Create DataFrames for train, val, and test sets
 train_df = pd.DataFrame({'train': train_list})
 val_df = pd.DataFrame({'val': val_list})

@@ -393,7 +393,7 @@ def train_loop_clam(epoch, model, loader, optimizer, n_classes, bag_weight, writ
         print('\n')
         for i in range(2):
             acc, correct, count = inst_logger.get_summary(i)
-            print('class {} clustering acc {}: correct {}/{}'.format(i, acc, correct, count))
+            # print('class {} clustering acc {}: correct {}/{}'.format(i, acc, correct, count))
 
     print('Epoch: {}, train_loss: {:.4f}, train_clustering_loss:  {:.4f}, train_error: {:.4f}'.format(epoch, train_loss, train_inst_loss,  train_error))
     for i in range(n_classes):
@@ -537,7 +537,7 @@ def validate_clam(cur, epoch, model, loader, n_classes, early_stopping = None, w
     sample_size = model.k_sample
     with torch.no_grad():
         try:
-            print("Here is loader --->", loader)
+            # print("Here is loader --->", loader)
             for batch_idx, (data, label) in enumerate(loader):
                 data, label = data.to(device), label.to(device)      
                 logits, Y_prob, Y_hat, _, instance_dict = model(data, label=label, instance_eval=True,testing=True)
@@ -592,7 +592,7 @@ def validate_clam(cur, epoch, model, loader, n_classes, early_stopping = None, w
         val_inst_loss /= inst_count
         for i in range(2):
             acc, correct, count = inst_logger.get_summary(i)
-            print('class {} clustering acc {}: correct {}/{}'.format(i, acc, correct, count))
+            # print('class {} clustering acc {}: correct {}/{}'.format(i, acc, correct, count))
     
     if writer:
         writer.add_scalar('val/loss', val_loss, epoch)

@@ -8,9 +8,9 @@ df = pd.read_csv("camelyon16.csv")
 case_ids = df['case_id']
 labels = df['label']
 case_id_list = case_ids.values
-train_list = case_id_list[:77]
-val_list = case_id_list[77:93]
-test_list= case_id_list[93:]
+train_list = case_id_list[:63]
+val_list = case_id_list[63:84]
+test_list= case_id_list[84:]
 # Create DataFrames for train, val, and test sets
 train_df = pd.DataFrame({'train': train_list})
 val_df = pd.DataFrame({'val': val_list})
@@ -20,6 +20,6 @@ test_df = pd.DataFrame({'test': test_list})
 split_df = pd.concat([train_df, val_df, test_df], axis=1)
 
 # Save the DataFrame to a CSV file
-split_df.to_csv("split_0.csv", index=False)
+split_df.to_csv("split_0.csv", index=True)
 
 print("CSV file saved successfully.")

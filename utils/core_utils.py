@@ -303,7 +303,172 @@ def validate(cur, epoch, model, loader, n_classes, early_stopping, writer=None, 
         if early_stopping:
             early_stopping(epoch, val_loss, model, ckpt_name=os.path.join(results_dir, "s_{}_checkpoint.pt".format(cur)))
 
+<<<<<<< HEAD
     return early_stopping.early_stop if early_stopping else False
+=======
+    if writer:
+        writer.add_scalar('train/loss', train_loss, epoch)
+        writer.add_scalar('train/error', train_error, epoch)
+
+   
+def validate(cur, epoch, model, loader, n_classes, early_stopping = None, writer = None, loss_fn = None, results_dir=None):
+    device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.eval()
+    acc_logger = Accuracy_Logger(n_classes=n_classes)
+    # loader.dataset.update_mode(True)
+    val_loss = 0.
+    val_error = 0.
+    
+    prob = np.zeros((len(loader), n_classes))
+    labels = np.zeros(len(loader))
+
+    with torch.no_grad():
+        for batch_idx, (data, label) in enumerate(loader):
+            data, label = data.to(device, non_blocking=True), label.to(device, non_blocking=True)
+
+            logits, Y_prob, Y_hat, _, _ = model(data)
+
+            acc_logger.log(Y_hat, label)
+            
+            loss = loss_fn(logits, label)
+
+            prob[batch_idx] = Y_prob.cpu().numpy()
+            labels[batch_idx] = label.item()
+            
+            val_loss += loss.item()
+            error = calculate_error(Y_hat, label)
+            val_error += error
+            
+
+    val_error /= len(loader)
+    val_loss /= len(loader)
+
+    if n_classes == 2:
+        auc = roc_auc_score(labels, prob[:, 1])
+    else:
+        aucs = []
+        binary_labels = label_binarize(labels, classes=[i for i in range(n_classes)])
+        for class_idx in range(n_classes):
+            if class_idx in labels:
+                fpr, tpr, _ = roc_curve(binary_labels[:, class_idx], prob[:, class_idx])
+                aucs.append(calc_auc(fpr, tpr))
+            else:
+                aucs.append(float('nan'))
+
+        auc = np.nanmean(np.array(aucs))
+    
+    
+    if writer:
+        writer.add_scalar('val/loss', val_loss, epoch)
+        writer.add_scalar('val/auc', auc, epoch)
+        writer.add_scalar('val/error', val_error, epoch)
+
+    print('\nVal Set, val_loss: {:.4f}, val_error: {:.4f}, auc: {:.4f}'.format(val_loss, val_error, auc))
+    for i in range(n_classes):
+        acc, correct, count = acc_logger.get_summary(i)
+        print('class {}: acc {}, correct {}/{}'.format(i, acc, correct, count))     
+
+    if early_stopping:
+        assert results_dir
+        early_stopping(epoch, val_loss, model, ckpt_name = os.path.join(results_dir, "s_{}_checkpoint.pt".format(cur)))
+        
+        if early_stopping.early_stop:
+            print("Early stopping")
+            return True
+
+    return False
+
+def validate_clam(cur, epoch, model, loader, n_classes, early_stopping = None, writer = None, loss_fn = None, results_dir = None):
+    device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.eval()
+    acc_logger = Accuracy_Logger(n_classes=n_classes)
+    inst_logger = Accuracy_Logger(n_classes=n_classes)
+    val_loss = 0.
+    val_error = 0.
+
+    val_inst_loss = 0.
+    val_inst_acc = 0.
+    inst_count=0
+    
+    prob = np.zeros((len(loader), n_classes))
+    labels = np.zeros(len(loader))
+    sample_size = model.k_sample
+    with torch.no_grad():
+        for batch_idx, (data, label) in enumerate(loader):
+            data, label = data.to(device), label.to(device)      
+            logits, Y_prob, Y_hat, _, instance_dict = model(data, label=label, instance_eval=True,testing=True)
+            print("Debug -->",logits, Y_prob, Y_hat)
+            acc_logger.log(Y_hat, label)
+            
+            loss = loss_fn(logits, label)
+
+            val_loss += loss.item()
+            # pdb.set_trace()
+            instance_loss = instance_dict['instance_loss']
+            
+            inst_count+=1
+            instance_loss_value = instance_loss.item()
+            val_inst_loss += instance_loss_value
+
+            inst_preds = instance_dict['inst_preds']
+            inst_labels = instance_dict['inst_labels']
+            inst_logger.log_batch(inst_preds, inst_labels)
+
+            prob[batch_idx] = Y_prob.cpu().numpy()
+            labels[batch_idx] = label.item()
+            
+            error = calculate_error(Y_hat, label)
+            val_error += error
+
+    val_error /= len(loader)
+    val_loss /= len(loader)
+
+    if n_classes == 2:
+        auc = roc_auc_score(labels, prob[:, 1])
+    else:
+        aucs = []
+        binary_labels = label_binarize(labels, classes=[i for i in range(n_classes)])
+        for class_idx in range(n_classes):
+            if class_idx in labels:
+                fpr, tpr, _ = roc_curve(binary_labels[:, class_idx], prob[:, class_idx])
+                aucs.append(calc_auc(fpr, tpr))
+            else:
+                aucs.append(float('nan'))
+
+        auc = np.nanmean(np.array(aucs))
+
+    print('\nVal Set, val_loss: {:.4f}, val_error: {:.4f}, auc: {:.4f}'.format(val_loss, val_error, auc))
+    if inst_count > 0:
+        val_inst_loss /= inst_count
+        for i in range(2):
+            acc, correct, count = inst_logger.get_summary(i)
+            print('class {} clustering acc {}: correct {}/{}'.format(i, acc, correct, count))
+    
+    if writer:
+        writer.add_scalar('val/loss', val_loss, epoch)
+        writer.add_scalar('val/auc', auc, epoch)
+        writer.add_scalar('val/error', val_error, epoch)
+        writer.add_scalar('val/inst_loss', val_inst_loss, epoch)
+
+
+    for i in range(n_classes):
+        acc, correct, count = acc_logger.get_summary(i)
+        print('class {}: acc {}, correct {}/{}'.format(i, acc, correct, count))
+        
+        if writer and acc is not None:
+            writer.add_scalar('val/class_{}_acc'.format(i), acc, epoch)
+     
+
+    if early_stopping:
+        assert results_dir
+        early_stopping(epoch, val_loss, model, ckpt_name = os.path.join(results_dir, "s_{}_checkpoint.pt".format(cur)))
+        
+        if early_stopping.early_stop:
+            print("Early stopping")
+            return True
+
+    return False
+>>>>>>> 33626a805760a66696059c84a37f3e6dfd1e60d1
 
 def summary(model, loader, n_classes):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

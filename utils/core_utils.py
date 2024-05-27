@@ -236,6 +236,7 @@ def train_loop(epoch, model, loader, optimizer, n_classes, writer=None, loss_fn=
 
     for batch_idx, (data, label) in enumerate(loader):
         data, label = data.to(device), label.to(device)
+        print(data, label)
         logits = model(data)
         loss = loss_fn(logits, label)
         preds = logits.argmax(dim=1)

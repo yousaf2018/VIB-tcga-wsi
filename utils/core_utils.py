@@ -202,7 +202,7 @@ def test(datasets, cur, args):
     print('Done!')
 
     print('\nInit optimizer ...', end=' ')
-    optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    # optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     print('Done!')
 
     print('\nInit Loaders...', end=' ')

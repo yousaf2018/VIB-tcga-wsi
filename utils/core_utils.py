@@ -238,11 +238,11 @@ def train_loop(epoch, model, loader, optimizer, n_classes, writer=None, loss_fn=
         data, label = data.to(device), label.to(device)
 
         # Assuming each data point is 32x32 and 1 channel
-        data = data.view(data.size(0), 1, 32, 32)  # Update to the actual dimensions of your images
+        data = data.view(data.size(0), 3, 32, 32)  # Update to the actual dimensions of your images
 
         logits = model(data)
         loss = loss_fn(logits, label)
-        preds = logits.argmax(dim=1)
+        preds = logits.argmax(dim=3)
 
         acc_logger.log_batch(preds, label)
         error = calculate_error(preds, label)

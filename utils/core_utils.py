@@ -121,6 +121,7 @@ def train(datasets, cur, args):
     model.fc = nn.Linear(num_ftrs, args.n_classes)
     model = model.to(device)
     print('Done!')
+    args.weight_decay = 0.0001
 
     print('\nInit optimizer ...', end=' ')
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)

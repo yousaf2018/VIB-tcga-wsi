@@ -236,7 +236,10 @@ def train_loop(epoch, model, loader, optimizer, n_classes, writer=None, loss_fn=
 
     for batch_idx, (data, label) in enumerate(loader):
         data, label = data.to(device), label.to(device)
-        print(data, label)
+
+        # Assuming each data point is 32x32 and 1 channel
+        data = data.view(data.size(0), 1, 32, 32)  # Update to the actual dimensions of your images
+
         logits = model(data)
         loss = loss_fn(logits, label)
         preds = logits.argmax(dim=1)

@@ -253,9 +253,9 @@ class Generic_WSI_Classification_Dataset(Dataset):
 			train_split = self.get_split_from_df(all_splits, 'train')
 			val_split = self.get_split_from_df(all_splits, 'val')
 			test_split = self.get_split_from_df(all_splits, 'test')
-			print("Here is val split -->", val_split.head())
-			print("Here is test split -->", test_split.head())
-			print("Here is train split -->", train_split.head())
+			print("Here is val split -->", val_split)
+			print("Here is test split -->", test_split)
+			print("Here is train split -->", train_split)
 
 
 

@@ -44,7 +44,7 @@ def main(args):
     for i in folds:
         seed_torch(args.seed+i)
         # pdb.set_trace()
-        train_dataset, val_dataset, test_dataset = dataset.return_splits(from_id=True,
+        train_dataset, val_dataset, test_dataset = dataset.return_splits(from_id=False,
                 csv_path='/kaggle/working/WSI-finetuning/splits/task_camelyon16/splits_0.csv')
         # train_loader = get_split_loader(train_dataset)
         datasets = (train_dataset, val_dataset, test_dataset)

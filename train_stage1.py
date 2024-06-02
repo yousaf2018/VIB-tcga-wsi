@@ -44,7 +44,7 @@ def main(args):
     for i in folds:
         seed_torch(args.seed+i)
         # pdb.set_trace()
-        train_dataset, val_dataset, test_dataset = dataset.return_splits(from_id=False,
+        train_dataset, val_dataset, test_dataset = dataset.return_splits(from_id=True,
                 csv_path='/kaggle/working/WSI-finetuning/splits/task_camelyon16/splits_0.csv')
         # train_loader = get_split_loader(train_dataset)
         datasets = (train_dataset, val_dataset, test_dataset)
@@ -176,7 +176,7 @@ if args.task == 'task_1_tumor_vs_normal':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(
                             csv_path = args.csv_path,
-                            data_dir = os.path.join(args.data_root_dir),
+                            data_dir = os.path.join(args.data_root_dir, sub_feat_dir),
                             shuffle = False,
                             seed = args.seed,
                             print_info = True,

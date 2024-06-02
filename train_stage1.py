@@ -177,7 +177,7 @@ if args.task == 'task_1_tumor_vs_normal':
     dataset = Generic_MIL_Dataset(
                             csv_path = args.csv_path,
                             data_dir = os.path.join(args.data_root_dir),
-                            shuffle = True,
+                            shuffle = False,
                             seed = args.seed,
                             print_info = True,
                             label_dict={0: 0, 1: 1},

@@ -48,7 +48,7 @@ def main(args):
                 csv_path='/kaggle/working/WSI-finetuning/splits/task_camelyon16/splits_0.csv')
         # train_loader = get_split_loader(train_dataset)
         datasets = (train_dataset, val_dataset, test_dataset)
-        print("Len of train dataset -->", len(train_dataset))
+        print("Len of train, val, and test dataset -->", len(train_dataset), len(val_dataset), len(test_dataset))
         results, test_auc, val_auc, test_acc, val_acc  = train(datasets, i, args)
         all_test_auc.append(test_auc)
         all_val_auc.append(val_auc)
